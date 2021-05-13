@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <ctime>
 #include <cstdlib>
+#include <cstring>
 #include <random>
 #include <iostream>
 #include <vector>
@@ -17,8 +18,6 @@ GLFWwindow *window;
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
 
-//#include "enemy(2).hpp"
-//#include "fireball(2).hpp"
 #include "Target.hpp"
 #include "Fireball.hpp"
 
@@ -132,6 +131,8 @@ public:
         std::vector<Target> targets;
         std::vector<Fireball> fireballs;
 
+        int total_shoots = 0;
+        int total_hits = 0;
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -168,6 +169,7 @@ public:
 
             int currMouseState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
             if (mouseState == GLFW_RELEASE && currMouseState == GLFW_PRESS) {
+                total_shoots += 1;
                 spawn_fireball(fireballs);
             }
             mouseState = currMouseState;
@@ -178,6 +180,7 @@ public:
                 glm::vec3 pos = fireballs[i].get_current_position();
                 for (size_t j = 0; j < targets.size(); ++j) {
                     if (targets[j].is_close_to_point(pos)) {
+                        total_hits += 1;
                         collided = true;
                         targets.erase(targets.begin() + j);
                         --j;
@@ -240,7 +243,7 @@ private:
         auto new_target = Target(targetProgramID, target_vertexbuffer, target_uvbuffer, target_vertices.size() * 3);
         new_target.set_texture(goldTexture);
 
-        const double r = 1.0 + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (10.0 - 1.0)));
+        const double r = 2.0 + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (10.0 - 2.0)));
         const double phi = static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (2 * glm::pi<float>() - 0.0)));
         const double psi = static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (2 * glm::pi<float>() - 0.0)));
         glm::vec3 pos = glm::vec3(
@@ -262,6 +265,8 @@ private:
 
         fireballs.push_back(new_fireball);
     }
+
+
 };
 
 int main() {

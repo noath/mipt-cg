@@ -19,7 +19,7 @@ void Target::set_texture(GLuint textureID) {
 }
 
 bool Target::is_close_to_point(glm::vec3 point) {
-    return glm::distance(point, coordinates_) < 0.3;
+    return glm::distance(point, coordinates_) < 0.5;
 }
 
 void Target::calculate_rotation_matrix(glm::mat4 &rotation_matrix) {
